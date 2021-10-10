@@ -12,15 +12,47 @@ namespace DatabaseControl
 {
     public partial class TableForm : Form
     {
-        private Database database;
-        public TableForm()
+        private Table currentTable;
+        private DataTable myTable;
+        public TableForm(Table table)
         {
             InitializeComponent();
+            currentTable = table;
+            GenerateTable();
         }
-        public void PassValue(Database db)
+        private void GenerateTable()
         {
-            database = db;
+            myTable = new DataTable();
+            for (int i = 0; i < currentTable.Columns.Count; i++)
+            {
+                DataColumn myColumn = new DataColumn(currentTable.Columns[i].Name);
+                myColumn.DataType = currentTable.Columns[i].TypeFullName.Contains("Invl") ?
+                            (currentTable.Columns[i].TypeFullName.Contains("Char") ? typeof(char) : typeof(string)) :
+                            Type.GetType(currentTable.Columns[i].TypeFullName);
+                myColumn.ReadOnly = false;
+                myTable.Columns.Add(myColumn);
+            }
+            for (int i = 0; i < currentTable.Rows.Count; i++)
+            {
+                var newRow = myTable.NewRow();
+                for (int j = 0; j < currentTable.Columns.Count; j++)
+                {
+                    var value = currentTable.Rows[i][j]?.Replace('.', ',');
+                    if (value != null && value != "")
+                    {
+                        string type = currentTable.Columns[j].TypeFullName;
+                        newRow[currentTable.Columns[j].Name] = Convert.ChangeType(value, type.Contains("Invl") ?
+                            (type.Contains("Char") ? typeof(char) : typeof(string)) : Type.GetType(type));
+                    }
+                }
+                myTable.Rows.Add(newRow);
+            }
+            dataGridView2.DataSource = myTable;
         }
 
+        private void Back_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

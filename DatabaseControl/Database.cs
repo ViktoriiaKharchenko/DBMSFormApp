@@ -43,7 +43,7 @@ namespace DatabaseControl
             var firstTable = GetTable(table1);
             var secondTable = GetTable(table2);
             if (firstTable == null || secondTable == null) return null;
-            var table = AddTable(table1 + "&" + table2);
+            var table = AddTable(table1 + "&" + table2, false);
             foreach (var col in firstTable.Columns)
             {
                 if (!col.Name.Equals(column1, StringComparison.OrdinalIgnoreCase))
@@ -69,7 +69,7 @@ namespace DatabaseControl
                     table.AddRows(tableRow, false);
                 }
             }
-            DatabaseFileSystem.SaveTable(table, Name);
+            //DatabaseFileSystem.SaveTable(table, Name);
             return table;
         }
     }

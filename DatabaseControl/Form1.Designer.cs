@@ -29,12 +29,16 @@ namespace DatabaseControl
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.Back = new System.Windows.Forms.Button();
             this.AddRow = new System.Windows.Forms.Button();
             this.DeleteRow = new System.Windows.Forms.Button();
+            this.JoinTables = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,9 +47,36 @@ namespace DatabaseControl
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Cursor = System.Windows.Forms.Cursors.IBeam;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView1.GridColor = System.Drawing.SystemColors.Control;
             this.dataGridView1.Location = new System.Drawing.Point(12, 56);
             this.dataGridView1.Name = "dataGridView1";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(776, 382);
@@ -54,6 +85,7 @@ namespace DatabaseControl
             // 
             // button1
             // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.button1.Location = new System.Drawing.Point(131, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(113, 38);
@@ -64,6 +96,7 @@ namespace DatabaseControl
             // 
             // button2
             // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.button2.Location = new System.Drawing.Point(250, 12);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(113, 38);
@@ -74,6 +107,7 @@ namespace DatabaseControl
             // 
             // Back
             // 
+            this.Back.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.Back.Location = new System.Drawing.Point(12, 12);
             this.Back.Name = "Back";
             this.Back.Size = new System.Drawing.Size(113, 38);
@@ -83,6 +117,7 @@ namespace DatabaseControl
             // 
             // AddRow
             // 
+            this.AddRow.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.AddRow.Location = new System.Drawing.Point(369, 12);
             this.AddRow.Name = "AddRow";
             this.AddRow.Size = new System.Drawing.Size(113, 38);
@@ -93,6 +128,7 @@ namespace DatabaseControl
             // 
             // DeleteRow
             // 
+            this.DeleteRow.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.DeleteRow.Location = new System.Drawing.Point(488, 12);
             this.DeleteRow.Name = "DeleteRow";
             this.DeleteRow.Size = new System.Drawing.Size(113, 38);
@@ -101,11 +137,24 @@ namespace DatabaseControl
             this.DeleteRow.UseVisualStyleBackColor = true;
             this.DeleteRow.Click += new System.EventHandler(this.DeleteRow_Click);
             // 
+            // JoinTables
+            // 
+            this.JoinTables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.JoinTables.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.JoinTables.Location = new System.Drawing.Point(675, 11);
+            this.JoinTables.Name = "JoinTables";
+            this.JoinTables.Size = new System.Drawing.Size(113, 38);
+            this.JoinTables.TabIndex = 10;
+            this.JoinTables.Text = "Join Tables";
+            this.JoinTables.UseVisualStyleBackColor = true;
+            this.JoinTables.Click += new System.EventHandler(this.JoinTables_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.JoinTables);
             this.Controls.Add(this.DeleteRow);
             this.Controls.Add(this.AddRow);
             this.Controls.Add(this.Back);
@@ -127,6 +176,7 @@ namespace DatabaseControl
         private System.Windows.Forms.Button Back;
         private System.Windows.Forms.Button AddRow;
         private System.Windows.Forms.Button DeleteRow;
+        private System.Windows.Forms.Button JoinTables;
     }
 }
 

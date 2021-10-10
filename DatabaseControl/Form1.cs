@@ -22,6 +22,7 @@ namespace DatabaseControl
             databaseSystem = new DatabaseSystem();
             AddRow.Visible = false;
             DeleteRow.Visible = false;
+            JoinTables.Visible = false;
             DatabaseFileSystem.LoadDatabases(databaseSystem);
             Load += new EventHandler(Form1_Load);
         }
@@ -61,6 +62,7 @@ namespace DatabaseControl
             var dbName = dataGridView1.Rows[row].Cells[1].Value;
             currentDatabase = databaseSystem.GetDatabase(dbName.ToString());
             dataGridView1.AllowUserToAddRows = false;
+            JoinTables.Visible = true;
             Back.Click += new EventHandler(Back_Click);
             button1.Click -= new EventHandler(AddDB_Click);
             button2.Click -= new EventHandler(DeleteDB_Click);
@@ -90,9 +92,10 @@ namespace DatabaseControl
             button2.Text = "Delete Column";
             AddRow.Visible = true;
             DeleteRow.Visible = true;
+            JoinTables.Visible = false;
             GenerateTable();
             dataGridView1.Columns.Cast<DataGridViewColumn>().ToList().ForEach(f => f.SortMode = DataGridViewColumnSortMode.NotSortable);
-
+            dataGridView1.CellValidating += new DataGridViewCellValidatingEventHandler(dataGridView1_CellValidating);
         }
         private void GenerateTable()
         {
@@ -140,7 +143,7 @@ namespace DatabaseControl
             for (int i = 0; i < dataGridView1.SelectedCells.Count; i++)
             {
                 var col = dataGridView1.SelectedCells[i].ColumnIndex;
-                if (MessageBox.Show(string.Format("Are you sure you want to delete {0} table?", dataGridView1.Columns[col].Name), "Message", 
+                if (MessageBox.Show(string.Format("Are you sure you want to delete {0} column?", dataGridView1.Columns[col].Name), "Message", 
                     MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                 {
                     currentTable.DeleteColumn(dataGridView1.Columns[col].Name);
@@ -184,6 +187,25 @@ namespace DatabaseControl
                 row.Cells[e.ColumnIndex].Value = DBNull.Value;
             }
         }
+        private void dataGridView1_CellValidating
+        (object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            var row = dataGridView1.Rows[e.RowIndex];
+            var value = row.Cells[e.ColumnIndex].EditedFormattedValue;
+            var column = currentTable.GetColumn(dataGridView1.Columns[e.ColumnIndex].Name);
+            if (column == null || value == "") return;
+            try
+            {
+                currentTable.EditRow(value, column.Name, e.RowIndex);
+                myTable.Rows[e.RowIndex][e.ColumnIndex] = value;
+            }
+            catch (InvalidCastException)
+            {
+                MessageBox.Show(string.Format("Invalid cast. Value should have {0} type", column.TypeFullName),
+                    "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Cancel = true;
+            }
+        }
         private void DeleteTable_CLick(object sender, EventArgs e)
         {
             for (int i = 0; i < dataGridView1.SelectedRows.Count; i++)
@@ -210,10 +232,11 @@ namespace DatabaseControl
             button2.Click += new EventHandler(DeleteTable_CLick);
             button1.Click -= new EventHandler(AddColumn_Click);
             button2.Click -= new EventHandler(DeleteColumn_Click);
-            
+            dataGridView1.CellValidating -= new DataGridViewCellValidatingEventHandler(dataGridView1_CellValidating);
             dataGridView1.CellValueChanged -= new DataGridViewCellEventHandler(CellValueChanged);
             AddRow.Visible = false;
             DeleteRow.Visible = false;
+            JoinTables.Visible = true;
             button1.Text = "Add";
             button2.Text = "Delete";
             var bindingSource1 = new BindingSource { DataSource = currentDatabase.Tables };
@@ -226,10 +249,17 @@ namespace DatabaseControl
             button1.Click -= new EventHandler(AddTable_Click);
             button2.Click -= new EventHandler(DeleteTable_CLick);
             Back.Click -= new EventHandler(Back_Click);
+            JoinTables.Visible = false;
             dataGridView1.CellContentClick += new DataGridViewCellEventHandler(DBSystem_CellContentClick);
             dataGridView1.CellContentClick -= new DataGridViewCellEventHandler(DB_CellContentClick);
             var bindingSource1 = new BindingSource { DataSource = databaseSystem.Databases };
             dataGridView1.DataSource = bindingSource1;
+        }
+
+        private void JoinTables_Click(object sender, EventArgs e)
+        {
+            var popup = new JoinTablesForm(currentDatabase);
+            popup.Show();
         }
     }
 }

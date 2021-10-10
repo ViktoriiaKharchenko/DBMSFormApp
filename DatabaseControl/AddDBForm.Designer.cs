@@ -38,11 +38,11 @@ namespace DatabaseControl
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.label1.Location = new System.Drawing.Point(68, 28);
+            this.label1.Location = new System.Drawing.Point(98, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(253, 29);
+            this.label1.Size = new System.Drawing.Size(194, 29);
             this.label1.TabIndex = 0;
-            this.label1.Text = "New Database Name";
+            this.label1.Text = "New Item Name";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // DbName
