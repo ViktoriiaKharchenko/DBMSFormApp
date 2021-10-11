@@ -69,7 +69,6 @@ namespace DatabaseControl
                     table.AddRows(tableRow, false);
                 }
             }
-            //DatabaseFileSystem.SaveTable(table, Name);
             return table;
         }
     }

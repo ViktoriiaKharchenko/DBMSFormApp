@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DatabaseControl
 {
-    static class DatabaseFileSystem
+    public static class DatabaseFileSystem
     {
-        private static readonly string path = "C:\\Users\\Boss\\source\\repos\\DatabaseControlSystem\\Database";
+        private static string path = "C:\\Users\\Boss\\source\\repos\\DatabaseControlSystem\\Database";
 
         public static void SaveTable (Table table, string dbName)
         {
@@ -80,6 +80,10 @@ namespace DatabaseControl
             {
                 table.AddRows(row, false);
             }
+        }
+        public static void SetPath(string otherPath)
+        {
+            path = otherPath;
         }
     }
 
