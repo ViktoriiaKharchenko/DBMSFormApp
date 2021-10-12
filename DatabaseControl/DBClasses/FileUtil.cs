@@ -92,7 +92,9 @@ namespace DatabaseControl
         {
             if (Directory.Exists(path))
             {
-                return Directory.GetDirectories(path);
+                DirectoryInfo DirInfo = new DirectoryInfo(path);
+                var subfolders = DirInfo.EnumerateDirectories().OrderBy(d => d.CreationTime).ToList();
+                return subfolders.Select(t => t.Name).ToArray();
             }
             throw new DirectoryNotFoundException();
         }
@@ -100,7 +102,9 @@ namespace DatabaseControl
         {
             if (Directory.Exists(path))
             {
-                return Directory.GetFiles(path);
+                DirectoryInfo DirInfo = new DirectoryInfo(path);
+                var filesInOrder = DirInfo.EnumerateFiles().OrderBy(d => d.CreationTime).ToList();
+                return filesInOrder.Select(t=>t.Name).ToArray();
             }
             throw new DirectoryNotFoundException();
         }
@@ -118,7 +122,7 @@ namespace DatabaseControl
                 if (col == "")
                     return null;
                 string colName = col.Split('(')[0];
-                string type = col.Substring(col.IndexOf('(')+1, col.Length-col.IndexOf('(')-2) ;//.Substring(0, col.Split('(')[1].Length);
+                string type = col.Substring(col.IndexOf('(')+1, col.Length-col.IndexOf('(')-2) ;
                 columnTypes.Add(colName, type);
             }
             return columnTypes;

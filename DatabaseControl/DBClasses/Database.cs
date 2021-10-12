@@ -6,22 +6,22 @@ namespace DatabaseControl
 {
     public class Database
     {
-        private static int uniqKey = 0;
+        private int tableKey = 0;
 
         public int Id { get; private set; }
         public string Name { get; private set; }
         public List<Table> Tables { get; private set; }
-        public Database (string name)
+        public Database (string name, int key)
         {
             Name = name;
-            Id = uniqKey++;
+            Id = key;
             Tables = new List<Table>();
         }
         public Table AddTable(string name, bool save = true)
         {
-            Table table = new Table(name)
+            Table table = new Table(name, tableKey++)
             {
-                Database = this.Name
+                Database = Name
             };
             if(save)
                 DatabaseFileSystem.SaveTable(table, Name);
@@ -32,9 +32,13 @@ namespace DatabaseControl
         {
             return Tables.FindLast(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
-        public void DeleteTable (string name)
+        public Table GetTable(string name, int id)
         {
-            var table = GetTable(name);
+            return Tables.FindLast(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && t.Id == id);
+        }
+        public void DeleteTable (string name, int id)
+        {
+            var table = GetTable(name, id);
             DatabaseFileSystem.DeleteTable(table, Name);
             Tables.Remove(table);
         }
@@ -43,7 +47,7 @@ namespace DatabaseControl
             var firstTable = GetTable(table1);
             var secondTable = GetTable(table2);
             if (firstTable == null || secondTable == null) return null;
-            var table = AddTable(table1 + "&" + table2, false);
+            var table = new Table(table1 + "&" + table2, -1);
             foreach (var col in firstTable.Columns)
             {
                 if (!col.Name.Equals(column1, StringComparison.OrdinalIgnoreCase))

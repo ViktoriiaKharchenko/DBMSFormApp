@@ -11,16 +11,15 @@ namespace DatabaseControl
     public enum Invl { charInvl, stringInvl}
     public class Table
     {
-        private static int uniqKey = 0;
         public int Id { get; private set; }
         public string Name { get; private set; }
         public string Database { get; set; }
         public List<Column> Columns { get; private set; }
         public List<List<string>> Rows { get; private set; }
-        public Table(string name)
+        public Table(string name, int key)
         {
             Name = name;
-            Id = uniqKey++;
+            Id = key;
             Columns = new List<Column>();
             Rows = new List<List<string>>();
         }

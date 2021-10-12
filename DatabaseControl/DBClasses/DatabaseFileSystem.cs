@@ -7,8 +7,7 @@ namespace DatabaseControl
 {
     public static class DatabaseFileSystem
     {
-        private static string path = "C:\\Users\\Boss\\source\\repos\\DatabaseControlSystem\\Database";
-
+        private static string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "\\Database";
         public static void SaveTable (Table table, string dbName)
         {
             string filePath = path + "\\" + dbName + "\\" + table.Name;
@@ -50,15 +49,13 @@ namespace DatabaseControl
                 var subDirs = FileUtil.GetSubDirs(path);
                 foreach (var dir in subDirs)
                 {
-                    var dbName = dir.Split('\\')[dir.Split('\\').Length-1];
-                    var db = dbSystem.AddDatabase(dbName, false);
-                    var files = FileUtil.GetFiles(dir);
+                    var db = dbSystem.AddDatabase(dir, false);
+                    var files = FileUtil.GetFiles(path+"\\"+dir);
                     foreach (var file in files)
                     {
-                        var tableName = file.Split('\\')[file.Split('\\').Length - 1].Split('.')[0];
-                        var table = db.AddTable(tableName, false);
+                        var table = db.AddTable(file.Split('.')[0], false);
                         table.Database = db.Name;
-                        var lines = FileUtil.ReadFile(file);
+                        var lines = FileUtil.ReadFile(path+"\\"+ dir +"\\"+file);
                         ParseTable(lines, table);
                     }
                 }

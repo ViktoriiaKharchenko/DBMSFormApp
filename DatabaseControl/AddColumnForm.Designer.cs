@@ -40,9 +40,9 @@ namespace DatabaseControl
             // Confirm
             // 
             this.Confirm.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.Confirm.Location = new System.Drawing.Point(98, 183);
+            this.Confirm.Location = new System.Drawing.Point(65, 181);
             this.Confirm.Name = "Confirm";
-            this.Confirm.Size = new System.Drawing.Size(173, 37);
+            this.Confirm.Size = new System.Drawing.Size(244, 37);
             this.Confirm.TabIndex = 5;
             this.Confirm.Text = "Confirm";
             this.Confirm.UseVisualStyleBackColor = true;
@@ -98,8 +98,8 @@ namespace DatabaseControl
             "System.Single",
             "System.Char",
             "System.String",
-            "System.CharInvl",
-            "System.StringInvl"});
+            "CharInvl",
+            "StringInvl"});
             this.TypeVal.Location = new System.Drawing.Point(136, 127);
             this.TypeVal.Name = "TypeVal";
             this.TypeVal.Size = new System.Drawing.Size(173, 34);
@@ -116,7 +116,9 @@ namespace DatabaseControl
             this.Controls.Add(this.Confirm);
             this.Controls.Add(this.ColumnName);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AddColumnForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddColumnForm";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -24,7 +24,7 @@ namespace UnitTestProject
             Assert.IsNotNull(db);
             Assert.AreEqual(dbName, db.Name);
             Assert.AreEqual(db, db2);
-            dbSystem.DeleteDatabase(dbName);
+            dbSystem.DeleteDatabase(dbName, db.Id);
             Assert.IsNull(dbSystem.GetDatabase(dbName));
         }
 
@@ -40,7 +40,7 @@ namespace UnitTestProject
             Assert.IsNotNull(table);
             Assert.AreEqual(tableName, table.Name);
             Assert.AreEqual(table, table2);
-            db.DeleteTable(tableName);
+            db.DeleteTable(tableName, table.Id);
             Assert.IsNull(db.GetTable(tableName));
         }
 

@@ -40,9 +40,9 @@ namespace DatabaseControl
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label1.Location = new System.Drawing.Point(98, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(194, 29);
+            this.label1.Size = new System.Drawing.Size(190, 29);
             this.label1.TabIndex = 0;
-            this.label1.Text = "New Item Name";
+            this.label1.Text = "New item name";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // DbName
@@ -71,7 +71,9 @@ namespace DatabaseControl
             this.Controls.Add(this.Confirm);
             this.Controls.Add(this.DbName);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "AddDBForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddDBForm";
             this.ResumeLayout(false);
             this.PerformLayout();

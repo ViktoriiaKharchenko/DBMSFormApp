@@ -42,10 +42,11 @@ namespace DatabaseControl
                 if (dataGridView1.SelectedRows[i].Cells[1].Value != null)
                 {
                     var dbName = dataGridView1.SelectedRows[i].Cells[1].Value.ToString();
+                    var dbId = dataGridView1.SelectedRows[i].Cells[0].Value;
                     if (MessageBox.Show(string.Format("Are you sure you want to delete {0} database?",dbName ), "Message", MessageBoxButtons.YesNo, 
                         MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        databaseSystem.DeleteDatabase(dbName); 
+                        databaseSystem.DeleteDatabase(dbName, Int32.Parse(dbId.ToString())); 
                     }
                 }
             }
@@ -57,7 +58,8 @@ namespace DatabaseControl
         {
             int row = dataGridView1.CurrentCell.RowIndex;
             var dbName = dataGridView1.Rows[row].Cells[1].Value;
-            currentDatabase = databaseSystem.GetDatabase(dbName.ToString());
+            var dbId = dataGridView1.Rows[row].Cells[0].Value;
+            currentDatabase = databaseSystem.GetDatabase(dbName.ToString(), Int32.Parse(dbId.ToString()));
             dataGridView1.AllowUserToAddRows = false;
             JoinTables.Visible = true;
             Back.Click += new EventHandler(Back_Click);
@@ -75,7 +77,8 @@ namespace DatabaseControl
         {
             int row = dataGridView1.CurrentCell.RowIndex;
             var tableName = dataGridView1.Rows[row].Cells[1].Value;
-            currentTable = currentDatabase.GetTable(tableName.ToString());
+            var tableId = dataGridView1.Rows[row].Cells[0].Value;
+            currentTable = currentDatabase.GetTable(tableName.ToString(), Int32.Parse(tableId.ToString()));
             dataGridView1.CellContentClick -= new DataGridViewCellEventHandler(DB_CellContentClick);
             dataGridView1.EditMode = DataGridViewEditMode.EditOnKeystroke;
             dataGridView1.CellValueChanged+= new DataGridViewCellEventHandler(CellValueChanged);
@@ -210,14 +213,15 @@ namespace DatabaseControl
                 if (dataGridView1.SelectedRows[i].Cells[1].Value != null)
                 {
                     var tableName = dataGridView1.SelectedRows[i].Cells[1].Value.ToString();
+                    var tableId = dataGridView1.SelectedRows[i].Cells[0].Value.ToString();
                     if (MessageBox.Show(string.Format("Are you sure you want to delete {0} table?", tableName), "Message", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        currentDatabase.DeleteTable(tableName);
+                        currentDatabase.DeleteTable(tableName, Int32.Parse(tableId.ToString()));
                     }
                 }
             }
-            var bindingSource1 = new BindingSource { DataSource = currentDatabase.Tables.Select(t => new { t.Id, t.Name })};
+            var bindingSource1 = new BindingSource { DataSource = currentDatabase.Tables};
             dataGridView1.DataSource = bindingSource1;
         }
         private void Back_Click2(object sender, EventArgs e)

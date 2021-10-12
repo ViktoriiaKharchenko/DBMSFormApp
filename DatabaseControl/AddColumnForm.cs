@@ -32,8 +32,13 @@ namespace DatabaseControl
                 DataColumn column = new DataColumn(ColumnName.Text);
                 column.DataType = TypeVal.Text.Contains("Invl") ?
                     (TypeVal.Text.Contains("Char") ? typeof(char) : typeof(string)) : Type.GetType(TypeVal.Text);
-                dataTable.Columns.Add(column);
                 table.AddColumn(ColumnName.Text, TypeVal.Text);
+                dataTable.Columns.Add(column);
+                if (table.Rows.Count == 0) 
+                { 
+                    table.AddRow();
+                    dataTable.Rows.Add();
+                }
                 Close();
                 dbGridView.DataSource = dataTable;
             }
