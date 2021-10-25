@@ -27,15 +27,16 @@ namespace DatabaseControl
 
         private void Join_Click(object sender, EventArgs e)
         {
-            string selectedTable1 = Table1.SelectedItem.ToString();
+            string selectedTable1 = Table1.SelectedItem?.ToString();
             var table1 = database.GetTable(selectedTable1);
-            string selectedTable2 = Table2.SelectedItem.ToString();
+            string selectedTable2 = Table2.SelectedItem?.ToString();
             var table2 = database.GetTable(selectedTable2);
-            string selectedColumn1 = Column1.SelectedItem.ToString();
-            var column1 = table1.GetColumn(selectedColumn1);
-            string selectedColumn2 = Column2.SelectedItem.ToString();
-            var column2 = table2.GetColumn(selectedColumn2);
-            var newTable = database.JoinTables(table1.Name, table2.Name, column1.Name, column2.Name);
+            string selectedColumn1 = Column1.SelectedItem?.ToString();
+            var column1 = table1?.GetColumn(selectedColumn1);
+            string selectedColumn2 = Column2.SelectedItem?.ToString();
+            var column2 = table2?.GetColumn(selectedColumn2);
+            var newTable = database.JoinTables(table1?.Name, table2?.Name, column1?.Name, column2?.Name);
+            if (newTable == null) return;
             var form = new TableForm(newTable);
             form.Show();
         }
