@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DatabaseControl
 {
-    public class DatabaseSystem
+    public class DatabaseSystem 
     {
         private int dbKey = 0;
         public List<Database> Databases { get; private set; }
@@ -12,6 +12,12 @@ namespace DatabaseControl
         public DatabaseSystem()
         {
             Databases = new List<Database>();
+        }
+        public DatabaseSystem(string path)
+        {
+            DatabaseFileSystem.SetPath(path);
+            Databases = new List<Database>();
+            DatabaseFileSystem.LoadDatabases(this);
         }
         public Database AddDatabase(string name, bool save = true)
         {
@@ -29,11 +35,35 @@ namespace DatabaseControl
         {
             return Databases.FindLast(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
+        public Database GetDatabase(int id)
+        {
+            return Databases.FindLast(t => t.Id == id); ;
+        }
         public void DeleteDatabase(string name, int id)
         {
             var db = GetDatabase(name, id);
             DatabaseFileSystem.DeleteDB(db);
             Databases.Remove(db);
+        }
+        public void AddDatabase(Database db)
+        {
+            var newDb = AddDatabase(db.Name);
+            foreach(var table in db.Tables)
+            {
+                var newTable = newDb.AddTable(table.Name);
+                foreach(var column in table.Columns)
+                {
+                    newTable.AddColumn(column.Name, column.TypeFullName);
+                }
+                foreach(var row in table.Rows)
+                {
+                    newTable.AddRow();
+                    for(int i =0; i<table.Columns.Count; i++)
+                    {
+                        newTable.EditRow(row[i], table.Columns[i].Name, table.Rows.IndexOf(row));
+                    }
+                }
+            }
         }
     }
 }

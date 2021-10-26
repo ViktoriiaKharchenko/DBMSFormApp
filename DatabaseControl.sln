@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControl", "Database
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{05331B30-7569-42BB-AC3A-E4A50CE84CFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApiServer", "RestApiServer\RestApiServer.csproj", "{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{05331B30-7569-42BB-AC3A-E4A50CE84CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05331B30-7569-42BB-AC3A-E4A50CE84CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05331B30-7569-42BB-AC3A-E4A50CE84CFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

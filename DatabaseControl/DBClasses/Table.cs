@@ -25,7 +25,7 @@ namespace DatabaseControl
         }
         public void AddColumn<T>(string name)
         {
-            Column col = new Column(name, typeof(T));
+            Column col = new Column(name, typeof(T).FullName);
             Columns.Add(col);
             if(Rows.Count != 0)
             {
@@ -69,7 +69,7 @@ namespace DatabaseControl
         }
         public void AddColumn(string name, Type type, bool save = true)
         {
-            Column col = new Column(name, type);
+            Column col = new Column(name, type.FullName);
             Columns.Add(col);
             if(save)
                 DatabaseFileSystem.SaveTable(this, Database);
@@ -106,6 +106,21 @@ namespace DatabaseControl
             Rows.Add(rows);
             if(save)
                 DatabaseFileSystem.SaveTable(this, Database);
+        }
+        public void AddRow(List<string> row)
+        {
+            if (row.Count > Columns.Count) throw new Exception("Row number does not match column number");
+            AddRow();
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                EditRow(row[i], Columns[i].Name, Rows.Count-1);
+            }
+            
+        }
+        public List<string> GetRow(int num)
+        {
+            if (num >= Rows.Count) return null;
+            return Rows[num];
         }
         public void EditRow<T>(T value, string colName, int rowNum)
         {

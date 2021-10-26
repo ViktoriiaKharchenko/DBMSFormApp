@@ -10,19 +10,19 @@ namespace DatabaseControl
     {
         public string Name { get; protected set; }
         public string TypeFullName { get; private set; }
-        public Column (){}
-        public Column(string name, Type type ) 
+        //public Column(string name, Type type ) 
+        //{
+        //    Name = name;
+        //    TypeFullName = type.FullName;
+        //}
+        public Column(string name, string typeFullName)
         {
             Name = name;
-            TypeFullName = type.FullName;
-        }
-        public Column(string name, string type)
-        {
-            Name = name;
-            TypeFullName = type;
+            TypeFullName = typeFullName;
         }
         public bool CheckCast<T>(T value)
         {
+            if (value.ToString() == "") return true;
             try
             {
                 var resultVal = Convert.ChangeType(value, Type.GetType(TypeFullName));

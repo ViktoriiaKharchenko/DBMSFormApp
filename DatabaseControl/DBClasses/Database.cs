@@ -28,6 +28,22 @@ namespace DatabaseControl
             Tables.Add(table);
             return table;
         }
+        public void AddTable(Table table)
+        {
+            var newTable = AddTable(table.Name);
+            foreach (var column in table.Columns)
+            {
+                newTable.AddColumn(column.Name, column.TypeFullName);
+            }
+            foreach (var row in table.Rows)
+            {
+                newTable.AddRow();
+                for (int i = 0; i < table.Columns.Count; i++)
+                {
+                    newTable.EditRow(row[i], table.Columns[i].Name, table.Rows.IndexOf(row));
+                }
+            }
+        }
         public Table GetTable(string name)
         {
             return Tables.FindLast(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -35,6 +51,10 @@ namespace DatabaseControl
         public Table GetTable(string name, int id)
         {
             return Tables.FindLast(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && t.Id == id);
+        }
+        public Table GetTable(int id)
+        {
+            return Tables.FindLast(t => t.Id == id);
         }
         public void DeleteTable (string name, int id)
         {
