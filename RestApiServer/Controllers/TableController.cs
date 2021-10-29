@@ -1,6 +1,7 @@
 ﻿using DatabaseControl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,29 @@ namespace RestApiServer.Controllers
             }
 
             return new JsonResult(Ok());
+        }
+        [HttpPost("join")]
+
+        public JsonResult JoinTables(int dbId, [FromBody] JObject data)
+        {
+            Table table;
+            try
+            {
+                var db = context_.GetDatabase(dbId);
+                int table1 = Int32.Parse(data["table1"].ToString());
+                int table2 = Int32.Parse(data["table2"].ToString());
+                string col1 = data["col1"].ToString();
+                string col2 = data["col2"].ToString();
+                var tabl1 = db.GetTable(table1);
+                var tabl2 = db.GetTable(table2);
+                table = db.JoinTables(tabl1.Name, tabl2.Name, col1, col2);
+            }
+            catch (Exception e)
+            {
+                return new JsonResult(BadRequest(e.Message));
+            }
+
+            return new JsonResult(table);
         }
         [HttpDelete("{id}")]
         public JsonResult DeleteDatabase(int dbId, int id)

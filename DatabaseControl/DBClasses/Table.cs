@@ -38,6 +38,8 @@ namespace DatabaseControl
         }
         public void AddColumn(string name, string typeName, bool save = true)
         {
+            var names = Columns.FindAll(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (names.Count != 0) throw new Exception(string.Format("Column with name {0} already exists", name));
             Regex stringInvl = new Regex(@"StringInvl\({1,1}\w,\w\)");
             Regex charrgx = new Regex(@"CharInvl\({1,1}\w,\w\)");
             if (typeName.Contains("Invl") && !charrgx.IsMatch(typeName) && !stringInvl.IsMatch(typeName))
@@ -46,14 +48,10 @@ namespace DatabaseControl
             }
             else if (!typeName.Contains("Invl"))
             {
-                try
-                {
-                    var type = Type.GetType(typeName);
-                }
-                catch
-                {
-                    throw new InvalidCastException();
-                }
+                var type = Type.GetType(typeName);
+                if(type == null)
+                    throw new Exception("Unknown type");
+  
             }
             Column col = new Column(name, typeName);
             Columns.Add(col);
@@ -61,7 +59,7 @@ namespace DatabaseControl
             {
                 foreach (var row in Rows)
                 {
-                    row.Add(null);
+                    row.Add("");
                 }
             }
             if(save)
@@ -110,12 +108,13 @@ namespace DatabaseControl
         public void AddRow(List<string> row)
         {
             if (row.Count > Columns.Count) throw new Exception("Row number does not match column number");
-            AddRow();
             for (int i = 0; i < Columns.Count; i++)
             {
-                EditRow(row[i], Columns[i].Name, Rows.Count-1);
+                if (row[i] == null) row[i] = "";
+                if (!CheckRow(row[i], GetColumn(Columns[i].Name))) 
+                    throw new Exception(string.Format("Wrong value {0} for column {1}", row[i], Columns[i].Name));
             }
-            
+            AddRows(row);
         }
         public List<string> GetRow(int num)
         {
@@ -123,31 +122,32 @@ namespace DatabaseControl
             return Rows[num];
         }
         public void EditRow<T>(T value, string colName, int rowNum)
-        {
+        { 
             var col = GetColumn(colName);
-            if (col == null) return;
+            if (col == null) throw new Exception("Column does not exist");
             int colNum = Columns.IndexOf(col);
+            if (CheckRow(value, col))
+            {
+                Rows[rowNum][colNum] = value.ToString();
+                DatabaseFileSystem.SaveTable(this, Database);
+            }
+            else throw new InvalidCastException();
+              
+        }
+        private bool CheckRow<T>(T value, Column col)
+        {
             if (col.TypeFullName.Contains("Invl"))
             {
                 Invl invl = col.TypeFullName.Contains("String") ? Invl.stringInvl : Invl.charInvl;
                 char from = col.TypeFullName.Split('(')[1].Substring(0, 1).ToCharArray()[0];
                 char to = col.TypeFullName.Split(',')[1].Substring(0, 1).ToCharArray()[0];
                 if (col.CheckValue(value.ToString(), invl, from, to))
-                {
-                    Rows[rowNum][colNum] = value.ToString();
-                    DatabaseFileSystem.SaveTable(this, Database);
-                }
-                else
-                {
-                    throw new InvalidCastException();
-                }
+                    return true;
             }
             else if (col.CheckCast(value))
-            {
-                Rows[rowNum][colNum] = value.ToString();
-                DatabaseFileSystem.SaveTable(this, Database);
-            }
-            else throw new InvalidCastException();
+                return true;
+            
+            return false;
         }
         public void DeleteRow(int rowNum)
         {

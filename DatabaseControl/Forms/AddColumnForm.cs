@@ -41,6 +41,7 @@ namespace DatabaseControl
                 }
                 Close();
                 dbGridView.DataSource = dataTable;
+                dbGridView.Columns.Cast<DataGridViewColumn>().ToList().ForEach(f => f.SortMode = DataGridViewColumnSortMode.NotSortable);
             }
             catch (Exception)
             {

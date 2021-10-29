@@ -1,6 +1,7 @@
 ﻿using DatabaseControl;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +37,20 @@ namespace RestApiServer.Controllers
             return new JsonResult(table.GetRow(num));
         }
         [HttpPost]
-        public JsonResult CreateRow(int dbId, int tblId, [FromBody] List<string> row)
+        public JsonResult CreateRow(int dbId, int tblId, [FromBody] JObject data)
         {
+            List<string> row = new List<string>();
+            int num = 0;
             try
             {
                 var db = context_.GetDatabase(dbId);
                 var table = db.GetTable(tblId);
+                foreach (var col in table.Columns)
+                {
+                    row.Add(data[col.Name]?.ToString());
+                    num += data[col.Name] != null ? 1 : 0;
+                }
+                if (num != data.Count) return new JsonResult(BadRequest("Unknown columns"));
                 table.AddRow(row);
             }
             catch (Exception e)
