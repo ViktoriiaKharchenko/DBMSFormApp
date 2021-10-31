@@ -41,7 +41,9 @@ namespace RestApiServer.Controllers
             try
             {
                 var db = context_.GetDatabase(dbId);
+                if (db == null) return new JsonResult(BadRequest("Database does not exist"));
                 var table = db.GetTable(tblId);
+                if (table == null) return new JsonResult(BadRequest("Table does not exist"));
                 table.AddColumn(column.Name, column.TypeFullName);
             }
             catch (Exception e)

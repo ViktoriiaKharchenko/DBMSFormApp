@@ -38,7 +38,7 @@ namespace DatabaseControl
         }
         public void AddColumn(string name, string typeName, bool save = true)
         {
-            if(!CheckColumn(name, typeName)) throw new Exception("Unknown type");
+            if(!CheckColumn(typeName)) throw new Exception("Unknown type");
             var names = Columns.FindAll(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (names.Count != 0) throw new Exception(string.Format("Column with name {0} already exists", name));
 
@@ -54,7 +54,7 @@ namespace DatabaseControl
             if(save)
                 DatabaseFileSystem.SaveTable(this, Database);
         }
-        public bool CheckColumn(string name, string typeName) {
+        public bool CheckColumn(string typeName) {
 
             Regex stringInvl = new Regex(@"StringInvl\({1,1}\w,\w\)");
             Regex charrgx = new Regex(@"CharInvl\({1,1}\w,\w\)");
@@ -94,7 +94,7 @@ namespace DatabaseControl
             List<string> row = new List<string>();
             for(int i = 0; i<Columns.Count; i++)
             {
-                row.Add(null);
+                row.Add("");
             }
             Rows.Add(row);
         }

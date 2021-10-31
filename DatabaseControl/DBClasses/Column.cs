@@ -10,11 +10,7 @@ namespace DatabaseControl
     {
         public string Name { get; protected set; }
         public string TypeFullName { get; private set; }
-        //public Column(string name, Type type ) 
-        //{
-        //    Name = name;
-        //    TypeFullName = type.FullName;
-        //}
+
         public Column(string name, string typeFullName)
         {
             Name = name;
@@ -37,6 +33,8 @@ namespace DatabaseControl
         }
         public bool CheckValue(string value, Invl invl, char from, char to)
         {
+            if (value == "") return true;
+
             if (invl == Invl.charInvl)
             {
                 if (value.Length > 1 ) return false;

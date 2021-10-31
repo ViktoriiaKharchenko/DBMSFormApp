@@ -51,7 +51,7 @@ namespace DatabaseControl
             {
                 var names = table.Columns.FindAll(t => t.Name.Equals(table.Name, StringComparison.OrdinalIgnoreCase));
                 if (names.Count != 0) throw new Exception(string.Format("Column with name {0} already exists", table.Name));
-                if (!table.CheckColumn(column.Name, column.TypeFullName)) throw new Exception("Unknown column type");
+                if (!table.CheckColumn(column.TypeFullName)) throw new Exception("Unknown column type");
             }
             foreach (var row in table.Rows)
             {
