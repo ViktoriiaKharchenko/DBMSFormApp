@@ -30,6 +30,7 @@ namespace DatabaseControl
         }
         public void AddTable(Table table)
         {
+            if (!CheckTable(table)) throw new Exception("Invalid table parameters");
             var newTable = AddTable(table.Name);
             foreach (var column in table.Columns)
             {
@@ -43,6 +44,25 @@ namespace DatabaseControl
                     newTable.EditRow(row[i], table.Columns[i].Name, table.Rows.IndexOf(row));
                 }
             }
+        }
+        public bool CheckTable (Table table)
+        {
+            foreach (var column in table.Columns)
+            {
+                var names = table.Columns.FindAll(t => t.Name.Equals(table.Name, StringComparison.OrdinalIgnoreCase));
+                if (names.Count != 0) throw new Exception(string.Format("Column with name {0} already exists", table.Name));
+                if (!table.CheckColumn(column.Name, column.TypeFullName)) throw new Exception("Unknown column type");
+            }
+            foreach (var row in table.Rows)
+            {
+                for (int i = 0; i < table.Columns.Count; i++)
+                {
+                    if (row[i] == null) row[i] = "";
+                    if (!table.CheckRow(row[i], table.GetColumn(table.Columns[i].Name)))
+                        throw new Exception(string.Format("Wrong value {0} for column {1}", row[i], table.Columns[i].Name));
+                }
+            }
+            return true;
         }
         public Table GetTable(string name)
         {

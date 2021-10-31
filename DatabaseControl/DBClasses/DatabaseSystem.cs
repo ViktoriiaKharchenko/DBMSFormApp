@@ -47,11 +47,13 @@ namespace DatabaseControl
         }
         public void AddDatabase(Database db)
         {
+            if (!CheckDatabase(db)) throw new Exception("Invalid database");
             var newDb = AddDatabase(db.Name);
             foreach(var table in db.Tables)
             {
                 var newTable = newDb.AddTable(table.Name);
-                foreach(var column in table.Columns)
+               
+                foreach (var column in table.Columns)
                 {
                     newTable.AddColumn(column.Name, column.TypeFullName);
                 }
@@ -64,6 +66,15 @@ namespace DatabaseControl
                     }
                 }
             }
+        }
+        public bool CheckDatabase(Database db)
+        {
+            foreach (var table in db.Tables)
+            {
+                if (!db.CheckTable(table)) throw new Exception("Invalid table specified");
+            }
+            return true;
+
         }
     }
 }

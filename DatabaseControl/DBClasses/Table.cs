@@ -38,21 +38,10 @@ namespace DatabaseControl
         }
         public void AddColumn(string name, string typeName, bool save = true)
         {
+            if(!CheckColumn(name, typeName)) throw new Exception("Unknown type");
             var names = Columns.FindAll(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (names.Count != 0) throw new Exception(string.Format("Column with name {0} already exists", name));
-            Regex stringInvl = new Regex(@"StringInvl\({1,1}\w,\w\)");
-            Regex charrgx = new Regex(@"CharInvl\({1,1}\w,\w\)");
-            if (typeName.Contains("Invl") && !charrgx.IsMatch(typeName) && !stringInvl.IsMatch(typeName))
-            {
-                throw new InvalidCastException();
-            }
-            else if (!typeName.Contains("Invl"))
-            {
-                var type = Type.GetType(typeName);
-                if(type == null)
-                    throw new Exception("Unknown type");
-  
-            }
+
             Column col = new Column(name, typeName);
             Columns.Add(col);
             if (Rows.Count != 0)
@@ -65,12 +54,22 @@ namespace DatabaseControl
             if(save)
                 DatabaseFileSystem.SaveTable(this, Database);
         }
-        public void AddColumn(string name, Type type, bool save = true)
-        {
-            Column col = new Column(name, type.FullName);
-            Columns.Add(col);
-            if(save)
-                DatabaseFileSystem.SaveTable(this, Database);
+        public bool CheckColumn(string name, string typeName) {
+
+            Regex stringInvl = new Regex(@"StringInvl\({1,1}\w,\w\)");
+            Regex charrgx = new Regex(@"CharInvl\({1,1}\w,\w\)");
+            if (typeName.Contains("Invl") && !charrgx.IsMatch(typeName) && !stringInvl.IsMatch(typeName))
+            {
+                return false;
+            }
+            else if (!typeName.Contains("Invl"))
+            {
+                var type = Type.GetType(typeName);
+                if (type == null)
+                    return false;
+
+            }
+            return true;
         }
         public Column GetColumn(string colName)
         {
@@ -134,7 +133,7 @@ namespace DatabaseControl
             else throw new InvalidCastException();
               
         }
-        private bool CheckRow<T>(T value, Column col)
+        public bool CheckRow<T>(T value, Column col)
         {
             if (col.TypeFullName.Contains("Invl"))
             {
