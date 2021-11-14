@@ -26,7 +26,9 @@ namespace RestApiServer.Controllers
         [HttpGet("{id}")]
         public JsonResult GetDatabase(int id)
         {
-            return new JsonResult(context_.GetDatabase(id));
+            var db = context_.GetDatabase(id);
+            if (db == null) return new JsonResult(BadRequest("Database does not exist"));
+            return new JsonResult(db);
         }
         [HttpPost]
         public JsonResult CreateDatabase([FromBody] Database db)

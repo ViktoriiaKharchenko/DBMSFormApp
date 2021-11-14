@@ -61,6 +61,10 @@ namespace RestApiServer.Controllers
                 string col2 = data["col2"].ToString();
                 var tabl1 = db.GetTable(table1);
                 var tabl2 = db.GetTable(table2);
+                if(tabl1.Columns.Find(t=>t.Name.Equals(col1)) == null) 
+                    return new JsonResult(BadRequest(string.Format("Table {0} does not contain column {1}", tabl1.Name, col1)));
+                if (tabl2.Columns.Find(t => t.Name.Equals(col2)) == null)
+                    return new JsonResult(BadRequest(string.Format("Table {0} does not contain column {1}", tabl2.Name, col2)));
                 table = db.JoinTables(tabl1.Name, tabl2.Name, col1, col2);
             }
             catch (Exception e)

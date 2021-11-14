@@ -30,6 +30,21 @@ namespace RestApiServer
             services.AddControllers().AddNewtonsoftJson();
             services.AddRazorPages();
             services.AddHttpContextAccessor();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "DatabaseControl.WebApi",
+                    Version = "v1",
+                    Description = "Code of the API goes here.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Viktoria Kharchenko",
+                        Email = string.Empty,
+                        Url = new Uri("https://github.com/ViktoriiaKharchenko/DBMSFormApp/tree/master/RestApiServer"),
+                    },
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -55,6 +70,13 @@ namespace RestApiServer
             {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
+            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DatabaseControl.WebApi v1");
+
+                c.RoutePrefix = "swagger/ui";
             });
         }
     }
