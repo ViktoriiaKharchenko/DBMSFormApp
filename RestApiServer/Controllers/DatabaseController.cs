@@ -18,11 +18,20 @@ namespace RestApiServer.Controllers
         {
             context_ = context;
         }
+        /// <summary>
+        /// Get databases
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetDatabases()
         {
             return new JsonResult(context_.Databases);
         }
+        /// <summary>
+        /// Get database
+        /// </summary>
+        /// <param name="id" example="2">Database id</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public JsonResult GetDatabase(int id)
         {
@@ -30,6 +39,11 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             return new JsonResult(db);
         }
+        /// <summary>
+        /// Create database
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CreateDatabase([FromBody] Database db)
         {
@@ -44,6 +58,11 @@ namespace RestApiServer.Controllers
 
             return new JsonResult(Ok());
         }
+        /// <summary>
+        /// Delete database
+        /// </summary>
+        /// <param name="id" example="3">Database id</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public JsonResult DeleteDatabase(int id)
         {

@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RestApiServer</name>
+    </assembly>
+    <members>
+        <member name="M:RestApiServer.Controllers.ColumnController.GetColumns(System.Int32,System.Int32)">
+            <summary>
+            Get columns
+            </summary>
+            <remarks>Schema consists of columns with name and type</remarks>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="1">Table id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.ColumnController.GetColumn(System.Int32,System.Int32,System.String)">
+            <summary>
+            Get column
+            </summary>
+            <remarks>Schema consists of column with name and type</remarks>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="1">Table id</param>
+            <param name="name" example="col1">Column name</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.ColumnController.CreateColumn(System.Int32,System.Int32,DatabaseControl.Column)">
+            <summary>
+            Create column
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example ="1">Table id</param>
+            <param name="column" example="col1">Column name</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.ColumnController.DeleteColumn(System.Int32,System.Int32,System.String)">
+            <summary>
+            Delete column
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="1">Table id</param>
+            <param name="name" example="col1">Column name</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.DatabaseController.GetDatabases">
+            <summary>
+            Get databases
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.DatabaseController.GetDatabase(System.Int32)">
+            <summary>
+            Get database
+            </summary>
+            <param name="id" example="2">Database id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.DatabaseController.CreateDatabase(DatabaseControl.Database)">
+            <summary>
+            Create database
+            </summary>
+            <param name="db"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.DatabaseController.DeleteDatabase(System.Int32)">
+            <summary>
+            Delete database
+            </summary>
+            <param name="id" example="3">Database id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.RowController.GetRows(System.Int32,System.Int32)">
+            <summary>
+            Get rows
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="0">Table id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.RowController.GetRow(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get row
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="0">Table id</param>
+            <param name="num" example="2">Row number</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.RowController.CreateRow(System.Int32,System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Create row
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="0">Table id</param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.RowController.DeleteDatabase(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Delete row
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="tblId" example="0">Table id</param>
+            <param name="num" example="2">Row number</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.TableController.GetTables(System.Int32)">
+            <summary>
+            Get tables
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.TableController.GetTable(System.Int32,System.Int32)">
+            <summary>
+            Get table
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="id" example="1">Table id</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.TableController.CreateTable(System.Int32,DatabaseControl.Table)">
+            <summary>
+            Create table
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="table"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.TableController.JoinTables(System.Int32,Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            Join tables
+            </summary>
+            <param name="dbId" example="1">Database id</param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApiServer.Controllers.TableController.DeleteDatabase(System.Int32,System.Int32)">
+            <summary>
+            Delete database
+            </summary>
+            <param name="dbId" example="2">Database id</param>
+            <param name="id" example ="3">Table id</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

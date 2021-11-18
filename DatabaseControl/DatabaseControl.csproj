@@ -151,6 +151,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBClasses\Link.cs" />
+    <Compile Include="DBClasses\RestModelBase.cs" />
     <Compile Include="Forms\AddColumnForm.cs">
       <SubType>Form</SubType>
     </Compile>

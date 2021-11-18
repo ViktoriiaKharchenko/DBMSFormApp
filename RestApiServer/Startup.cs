@@ -44,6 +44,8 @@ namespace RestApiServer
                         Url = new Uri("https://github.com/ViktoriiaKharchenko/DBMSFormApp/tree/master/RestApiServer"),
                     },
                 });
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "RestApiServer.xml");
+                c.IncludeXmlComments(filePath);
             });
         }
 

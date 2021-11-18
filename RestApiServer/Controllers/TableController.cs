@@ -18,6 +18,11 @@ namespace RestApiServer.Controllers
         {
             context_ = context;
         }
+        /// <summary>
+        /// Get tables
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetTables(int dbId)
         {
@@ -25,6 +30,12 @@ namespace RestApiServer.Controllers
             if(db==null) return new JsonResult(BadRequest("Database does not exist"));
             return new JsonResult(db.Tables);
         }
+        /// <summary>
+        /// Get table
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="id" example="1">Table id</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public JsonResult GetTable(int dbId, int id)
         {
@@ -32,6 +43,12 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             return new JsonResult(db.GetTable(id));
         }
+        /// <summary>
+        /// Create table
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="table"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CreateTable(int dbId, [FromBody] Table table)
         {
@@ -47,6 +64,12 @@ namespace RestApiServer.Controllers
 
             return new JsonResult(Ok());
         }
+        /// <summary>
+        /// Join tables
+        /// </summary>
+        /// <param name="dbId" example="1">Database id</param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost("join")]
 
         public JsonResult JoinTables(int dbId, [FromBody] JObject data)
@@ -74,6 +97,12 @@ namespace RestApiServer.Controllers
 
             return new JsonResult(table);
         }
+        /// <summary>
+        /// Delete database
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="id" example ="3">Table id</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public JsonResult DeleteDatabase(int dbId, int id)
         {

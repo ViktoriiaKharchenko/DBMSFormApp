@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using DatabaseControl.DBClasses;
 
 namespace DatabaseControl
 {
-    public class Column
+    public class Column : RestModelBase
     {
         public string Name { get; protected set; }
         public string TypeFullName { get; private set; }

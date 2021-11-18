@@ -18,6 +18,12 @@ namespace RestApiServer.Controllers
         {
             context_ = context;
         }
+        /// <summary>
+        /// Get rows
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="tblId" example="0">Table id</param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetRows(int dbId, int tblId)
         {
@@ -27,6 +33,13 @@ namespace RestApiServer.Controllers
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
             return new JsonResult(table.Rows);
         }
+        /// <summary>
+        /// Get row
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="tblId" example="0">Table id</param>
+        /// <param name="num" example="2">Row number</param>
+        /// <returns></returns>
         [HttpGet("{num}")]
         public JsonResult GetRow(int dbId, int tblId, int num)
         {
@@ -36,6 +49,13 @@ namespace RestApiServer.Controllers
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
             return new JsonResult(table.GetRow(num));
         }
+        /// <summary>
+        /// Create row
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="tblId" example="0">Table id</param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult CreateRow(int dbId, int tblId, [FromBody] JObject data)
         {
@@ -62,6 +82,13 @@ namespace RestApiServer.Controllers
 
             return new JsonResult(Ok());
         }
+        /// <summary>
+        /// Delete row
+        /// </summary>
+        /// <param name="dbId" example="2">Database id</param>
+        /// <param name="tblId" example="0">Table id</param>
+        /// <param name="num" example="2">Row number</param>
+        /// <returns></returns>
         [HttpDelete("{num}")]
         public JsonResult DeleteDatabase(int dbId, int tblId, int num)
         {
