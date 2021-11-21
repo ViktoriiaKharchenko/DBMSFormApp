@@ -92,7 +92,7 @@ namespace RestApiServer.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(BadRequest(e.Message));
+                return new (StatusCode(500, e.Message));
             }
 
             return new JsonResult(table);

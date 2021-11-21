@@ -28,7 +28,7 @@ namespace RestApiServer
             string path = Directory.GetParent(Environment.CurrentDirectory).FullName + "\\Database";
             services.Add(new ServiceDescriptor(typeof(DatabaseSystem), new DatabaseSystem(path)));
             services.AddControllers().AddNewtonsoftJson();
-            services.AddRazorPages();
+            //services.AddRazorPages();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(c =>
             {
@@ -68,10 +68,12 @@ namespace RestApiServer
 
             app.UseAuthorization();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapRazorPages();
+                //endpoints.MapRazorPages();
             });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
