@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RestApiServer.Models;
+using Microsoft.AspNetCore.Routing;
+using DatabaseControl.DBClasses;
 
 namespace RestApiServer.Controllers
 {
@@ -14,9 +17,13 @@ namespace RestApiServer.Controllers
     public class RowController : ControllerBase
     {
         private readonly DatabaseSystem context_;
-        public RowController(DatabaseSystem context)
+        private LinkGenerator linkGenerator_;
+
+        public RowController(DatabaseSystem context, LinkGenerator linkGenerator)
         {
             context_ = context;
+            linkGenerator_ = linkGenerator;
+
         }
         /// <summary>
         /// Get rows
@@ -31,7 +38,16 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             var table = db.GetTable(tblId);
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
-            return new JsonResult(table.Rows);
+
+            List<RowModel> rows = new List<RowModel>();
+            for( int i = 0; i< table.Rows.Count; i++)
+            {
+                var rowModel = new RowModel();
+                rowModel.Row = table.Rows[i];
+                rowModel.Links = CreateRowLinks(nameof(GetRows), dbId, tblId, i);
+                rows.Add(rowModel);
+            }
+            return new JsonResult(rows);
         }
         /// <summary>
         /// Get row
@@ -47,7 +63,13 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             var table = db.GetTable(tblId);
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
-            return new JsonResult(table.GetRow(num));
+            var row = table.GetRow(num);
+            var rowModel = new RowModel()
+            {
+                Row = row,
+                Links = CreateRowLinks(nameof(GetRow), dbId, tblId, num)
+            };
+            return new JsonResult(rowModel);
         }
         /// <summary>
         /// Create row
@@ -61,6 +83,7 @@ namespace RestApiServer.Controllers
         {
             List<string> row = new List<string>();
             int num = 0;
+            var rowModel = new RowModel();
             try
             {
                 var db = context_.GetDatabase(dbId);
@@ -74,13 +97,15 @@ namespace RestApiServer.Controllers
                 }
                 if (num != data.Count) return new JsonResult(BadRequest("Unknown columns"));
                 table.AddRow(row);
+                rowModel.Row = row;
+                rowModel.Links = CreateRowLinks(nameof(CreateRow), dbId, tblId, table.Rows.IndexOf(row));
             }
             catch (Exception e)
             {
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(Ok());
+            return new JsonResult(rowModel);
         }
         /// <summary>
         /// Delete row
@@ -90,7 +115,7 @@ namespace RestApiServer.Controllers
         /// <param name="num" example="2">Row number</param>
         /// <returns></returns>
         [HttpDelete("{num}")]
-        public JsonResult DeleteDatabase(int dbId, int tblId, int num)
+        public JsonResult DeleteRow(int dbId, int tblId, int num)
         {
             var db = context_.GetDatabase(dbId);
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
@@ -98,7 +123,30 @@ namespace RestApiServer.Controllers
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
             if (table.GetRow(num) == null) return new JsonResult(BadRequest("Row does not exist"));
             table.DeleteRow(num);
-            return new JsonResult(Ok());
+            var links = CreateRowLinks(nameof(DeleteRow), dbId, tblId, num);
+            return new JsonResult(links);
+        }
+        private List<Link> CreateRowLinks(string method, int dbId, int tblId, int num )
+        {
+            var links = new List<Link>
+            {
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetRows), values: new { dbId, tblId }),
+                method == nameof(GetRows) ? "self" : "rows_get",
+                "GET"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteRow), values: new { dbId, tblId, num }),
+                method == nameof(DeleteRow) ? "self" : "row_delete",
+                "DELETE")
+            };
+            if (method != nameof(DeleteRow))
+            {
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetRow), values: new { dbId, tblId, num }),
+                   method == nameof(GetRow) ? "self" : "row_get",
+                   "GET"));
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateRow), values: new { dbId, tblId }),
+                method == nameof(CreateRow) ? "self" : "row_post",
+                "POST"));
+            }
+            return links;
         }
     }
 }

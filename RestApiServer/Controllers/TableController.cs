@@ -1,6 +1,8 @@
 ﻿using DatabaseControl;
+using DatabaseControl.DBClasses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,9 +16,12 @@ namespace RestApiServer.Controllers
     public class TableController : ControllerBase
     {
         private readonly DatabaseSystem context_;
-        public TableController(DatabaseSystem context)
+        private LinkGenerator linkGenerator_;
+
+        public TableController(DatabaseSystem context, LinkGenerator linkGenerator)
         {
             context_ = context;
+            linkGenerator_ = linkGenerator;
         }
         /// <summary>
         /// Get tables
@@ -28,6 +33,10 @@ namespace RestApiServer.Controllers
         {
             var db = context_.GetDatabase(dbId);
             if(db==null) return new JsonResult(BadRequest("Database does not exist"));
+            foreach(var tbl in db.Tables)
+            {
+                tbl.Links = CreateTableLinks(nameof(GetTables), dbId, tbl.Id);
+            }
             return new JsonResult(db.Tables);
         }
         /// <summary>
@@ -41,7 +50,9 @@ namespace RestApiServer.Controllers
         {
             var db = context_.GetDatabase(dbId);
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
-            return new JsonResult(db.GetTable(id));
+            var table = db.GetTable(id);
+            table.Links = CreateTableLinks(nameof(GetTable), dbId, id);
+            return new JsonResult(table);
         }
         /// <summary>
         /// Create table
@@ -56,13 +67,14 @@ namespace RestApiServer.Controllers
             {
                var db = context_.GetDatabase(dbId);
                 db.AddTable(table);
+                table.Links = CreateTableLinks(nameof(CreateTable), dbId, table.Id);
             }
             catch (Exception e)
             {
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(Ok());
+            return new JsonResult(table);
         }
         /// <summary>
         /// Join tables
@@ -104,14 +116,38 @@ namespace RestApiServer.Controllers
         /// <param name="id" example ="3">Table id</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public JsonResult DeleteDatabase(int dbId, int id)
+        public JsonResult DeleteTable(int dbId, int id)
         {
             var db = context_.GetDatabase(dbId);
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             var table = db.GetTable(id);
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
             db.DeleteTable(table.Name, id);
-            return new JsonResult(Ok());
+            var links = CreateTableLinks(nameof(DeleteTable), dbId, id);
+            return new JsonResult(links);
+        }
+
+        private List<Link> CreateTableLinks(string method, int dbId, int tblId)
+        {
+            var links = new List<Link>
+            {
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTables), values: new { dbId }),
+                method == nameof(GetTables) ? "self" : "tables_get",
+                "GET"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteTable), values: new { dbId, tblId }),
+                method == nameof(DeleteTable) ? "self" : "table_delete",
+                "DELETE")
+            };
+            if (method != nameof(DeleteTable))
+            {
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTable), values: new { dbId, tblId }),
+                   method == nameof(GetTable) ? "self" : "table_get",
+                   "GET"));
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateTable), values: new { dbId }),
+                method == nameof(CreateTable) ? "self" : "table_post",
+                "POST"));
+            }
+            return links;
         }
     }
 }

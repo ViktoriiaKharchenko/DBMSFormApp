@@ -15,12 +15,12 @@ namespace RestApiServer.Controllers
     public class ColumnController : ControllerBase
     {
         private readonly DatabaseSystem context_;
-        private LinkGenerator _linkGenerator;
+        private LinkGenerator linkGenerator_;
 
         public ColumnController(DatabaseSystem context, LinkGenerator linkGenerator)
         {
             context_ = context;
-            _linkGenerator = linkGenerator;
+            linkGenerator_ = linkGenerator;
         }
         /// <summary>
         /// Get columns
@@ -37,6 +37,10 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             var table = db.GetTable(tblId);
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
+            foreach(var col in table.Columns)
+            {
+                col.Links = CreateColumnLinks(nameof(GetColumns), dbId, tblId, col.Name);
+            }
             return new JsonResult(table.Columns);
         }
         /// <summary>
@@ -54,7 +58,9 @@ namespace RestApiServer.Controllers
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             var table = db.GetTable(tblId);
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
-            return new JsonResult(table.GetColumn(name));
+            var column = table.GetColumn(name);
+            column.Links = CreateColumnLinks(nameof(GetColumn), dbId, tblId, name);
+            return new JsonResult(column);
         }
         /// <summary>
         /// Create column
@@ -72,6 +78,7 @@ namespace RestApiServer.Controllers
                 if (db == null) return new JsonResult(BadRequest("Database does not exist"));
                 var table = db.GetTable(tblId);
                 if (table == null) return new JsonResult(BadRequest("Table does not exist"));
+                column.Links = CreateColumnLinks(nameof(CreateColumn), dbId, tblId, column.Name);
                 table.AddColumn(column.Name, column.TypeFullName);
             }
             catch (Exception e)
@@ -79,7 +86,7 @@ namespace RestApiServer.Controllers
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(Ok());
+            return new JsonResult(column);
         }
 
         /// <summary>
@@ -98,29 +105,29 @@ namespace RestApiServer.Controllers
             if (table == null) return new JsonResult(BadRequest("Table does not exist"));
             if (table.GetColumn(name) == null) return new JsonResult(BadRequest("Column does not exist"));
             table.DeleteColumn(name);
-            var links = new List<Link>
-            {
-                new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteColumn), values: new { dbId, tblId, name }),
-                "self",
-                "DELETE")
-            };
-
+            var links = CreateColumnLinks(nameof(DeleteColumn), dbId, tblId, name);
+       
             return links;
         }
-        private List<Link> CreateLinksForTableColumn(string method, int dbId, string tblId, string name, int type = 0, string newName = "")
+        private List<Link> CreateColumnLinks(string method, int dbId, int tblId, string name)
         {
             var links = new List<Link>
             {
-                new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetColumn), values: new { dbId, tblId }),
-                method == nameof(GetColumn) ? "self" : "table_get",
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetColumns), values: new { dbId, tblId }),
+                method == nameof(GetColumns) ? "self" : "columns_get",
                 "GET"),
-                new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(CreateColumn), values: new { dbId, tblId, name }),
-                method == nameof(CreateColumn) ? "self" : "table_post",
-                "PUT"),
-                new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteColumn), values: new { dbId, tblId, name }),
-                method == nameof(DeleteColumn) ? "self" : "table_delete",
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteColumn), values: new { dbId, tblId, name }),
+                method == nameof(DeleteColumn) ? "self" : "column_delete",
                 "DELETE")
             };
+            if (method != nameof(DeleteColumn)) {
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetColumn), values: new { dbId, tblId, name }),
+                   method == nameof(GetColumn) ? "self" : "column_get",
+                   "GET"));
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateColumn), values: new { dbId, tblId }),
+                method == nameof(CreateColumn) ? "self" : "column_post",
+                "POST"));
+            }
             return links;
         }
 

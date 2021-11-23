@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DatabaseControl.DBClasses;
+
 
 namespace DatabaseControl
 {
-    public class Database
+    public class Database : RestModelBase
     {
         private int tableKey = 0;
 

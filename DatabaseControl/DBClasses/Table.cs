@@ -5,11 +5,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using DatabaseControl.DBClasses;
 
 namespace DatabaseControl
 {
     public enum Invl { charInvl, stringInvl}
-    public class Table
+    public class Table : RestModelBase
     {
         public int Id { get; private set; }
         public string Name { get; private set; }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DatabaseControl;
 using System.IO;
+using DatabaseControl.DBClasses;
+using Microsoft.AspNetCore.Routing;
 
 namespace RestApiServer.Controllers
 {
@@ -14,9 +16,12 @@ namespace RestApiServer.Controllers
     public class DatabaseController : Controller
     {
         private readonly DatabaseSystem context_;
-        public DatabaseController(DatabaseSystem context)
+        private LinkGenerator linkGenerator_;
+
+        public DatabaseController(DatabaseSystem context, LinkGenerator linkGenerator)
         {
             context_ = context;
+            linkGenerator_ = linkGenerator;
         }
         /// <summary>
         /// Get databases
@@ -25,6 +30,10 @@ namespace RestApiServer.Controllers
         [HttpGet]
         public JsonResult GetDatabases()
         {
+            foreach(var db in context_.Databases)
+            {
+                db.Links = CreateDatabaseLinks(nameof(GetDatabases), db.Id);
+            }
             return new JsonResult(context_.Databases);
         }
         /// <summary>
@@ -37,6 +46,7 @@ namespace RestApiServer.Controllers
         {
             var db = context_.GetDatabase(id);
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
+            db.Links = CreateDatabaseLinks(nameof(GetDatabase), db.Id);
             return new JsonResult(db);
         }
         /// <summary>
@@ -50,13 +60,14 @@ namespace RestApiServer.Controllers
             try
             {
                 context_.AddDatabase(db);
+                db.Links = CreateDatabaseLinks(nameof(CreateDatabase), db.Id);
             }
             catch (Exception e)
             {
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(Ok());
+            return new JsonResult(db);
         }
         /// <summary>
         /// Delete database
@@ -69,8 +80,32 @@ namespace RestApiServer.Controllers
             var db = context_.GetDatabase(id);
             if (db == null) return new JsonResult(BadRequest("Database does not exist"));
             context_.DeleteDatabase(db.Name, id);
-            return new JsonResult(Ok());
+            var links = CreateDatabaseLinks(nameof(DeleteDatabase), id);
+            return new JsonResult(links);
         }
 
-     }
+        private List<Link> CreateDatabaseLinks(string method, int dbId)
+        {
+            var links = new List<Link>
+            {
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetDatabases)),
+                method == nameof(GetDatabases) ? "self" : "databases_get",
+                "GET"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteDatabase), values: new { dbId}),
+                method == nameof(DeleteDatabase) ? "self" : "column_delete",
+                "DELETE")
+            };
+            if (method != nameof(DeleteDatabase))
+            {
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetDatabase), values: new { dbId}),
+                   method == nameof(GetDatabase) ? "self" : "column_get",
+                   "GET"));
+                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateDatabase)),
+                method == nameof(CreateDatabase) ? "self" : "column_post",
+                "POST"));
+            }
+            return links;
+        }
+
+    }
 }

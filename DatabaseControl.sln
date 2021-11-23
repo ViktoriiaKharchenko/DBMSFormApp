@@ -7,7 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseControl", "Database
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{05331B30-7569-42BB-AC3A-E4A50CE84CFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApiServer", "RestApiServer\RestApiServer.csproj", "{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestApiServer", "RestApiServer\RestApiServer.csproj", "{2A019684-AA2B-47F4-9588-B80AF1C1BFFE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C186C325-6C8E-41A6-8C18-FEBAA0175A8F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

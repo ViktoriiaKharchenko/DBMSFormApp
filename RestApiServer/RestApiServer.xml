@@ -94,7 +94,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:RestApiServer.Controllers.RowController.DeleteDatabase(System.Int32,System.Int32,System.Int32)">
+        <member name="M:RestApiServer.Controllers.RowController.DeleteRow(System.Int32,System.Int32,System.Int32)">
             <summary>
             Delete row
             </summary>
@@ -134,7 +134,7 @@
             <param name="data"></param>
             <returns></returns>
         </member>
-        <member name="M:RestApiServer.Controllers.TableController.DeleteDatabase(System.Int32,System.Int32)">
+        <member name="M:RestApiServer.Controllers.TableController.DeleteTable(System.Int32,System.Int32)">
             <summary>
             Delete database
             </summary>
