@@ -63,18 +63,20 @@ namespace RestApiServer.Controllers
         [HttpPost]
         public JsonResult CreateTable(int dbId, [FromBody] Table table)
         {
+            Table tbl;
             try
             {
                var db = context_.GetDatabase(dbId);
                 db.AddTable(table);
-                table.Links = CreateTableLinks(nameof(CreateTable), dbId, table.Id);
+                tbl = db.GetTable(table.Name);
+                tbl.Links = CreateTableLinks(nameof(CreateTable), dbId, tbl.Id);
             }
             catch (Exception e)
             {
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(table);
+            return new JsonResult(tbl);
         }
         /// <summary>
         /// Join tables
@@ -101,12 +103,12 @@ namespace RestApiServer.Controllers
                 if (tabl2.Columns.Find(t => t.Name.Equals(col2)) == null)
                     return new JsonResult(BadRequest(string.Format("Table {0} does not contain column {1}", tabl2.Name, col2)));
                 table = db.JoinTables(tabl1.Name, tabl2.Name, col1, col2);
+                table.Links = CreateTableLinks(nameof(JoinTables), dbId, -1, table1, table2);
             }
             catch (Exception e)
             {
                 return new (StatusCode(500, e.Message));
             }
-
             return new JsonResult(table);
         }
         /// <summary>
@@ -127,25 +129,42 @@ namespace RestApiServer.Controllers
             return new JsonResult(links);
         }
 
-        private List<Link> CreateTableLinks(string method, int dbId, int tblId)
+        private List<Link> CreateTableLinks(string method, int dbId, int id, int firstTable = 0, int secondTable = 0)
         {
+            if (method == nameof(JoinTables))
+            {
+                var link = new List<Link>
+                {
+                    new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(JoinTables), values: new { dbId }),
+                    method == nameof(JoinTables) ? "self" : "join_tables",
+                    "POST"),
+                    new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTables), values: new { dbId}),
+                    method == nameof(GetTables) ? "self" : "tables_get",
+                    "GET")
+                };
+                return link;
+            }
+
             var links = new List<Link>
             {
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTables), values: new { dbId }),
                 method == nameof(GetTables) ? "self" : "tables_get",
                 "GET"),
-                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteTable), values: new { dbId, tblId }),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateTable), values: new { dbId }),
+                method == nameof(CreateTable) ? "self" : "table_post",
+                "POST"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteTable), values: new { dbId, id }),
                 method == nameof(DeleteTable) ? "self" : "table_delete",
-                "DELETE")
+                "DELETE"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(JoinTables), values: new { dbId }),
+                method == nameof(JoinTables) ? "self" : "join_tables",
+                 "POST")
             };
             if (method != nameof(DeleteTable))
             {
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTable), values: new { dbId, tblId }),
+                links.Insert(1, new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetTable), values: new { dbId, id }),
                    method == nameof(GetTable) ? "self" : "table_get",
                    "GET"));
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateTable), values: new { dbId }),
-                method == nameof(CreateTable) ? "self" : "table_post",
-                "POST"));
             }
             return links;
         }

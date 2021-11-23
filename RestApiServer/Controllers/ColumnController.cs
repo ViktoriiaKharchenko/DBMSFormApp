@@ -116,17 +116,17 @@ namespace RestApiServer.Controllers
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetColumns), values: new { dbId, tblId }),
                 method == nameof(GetColumns) ? "self" : "columns_get",
                 "GET"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateColumn), values: new { dbId, tblId }),
+                method == nameof(CreateColumn) ? "self" : "column_post",
+                "POST"),
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteColumn), values: new { dbId, tblId, name }),
                 method == nameof(DeleteColumn) ? "self" : "column_delete",
                 "DELETE")
             };
             if (method != nameof(DeleteColumn)) {
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetColumn), values: new { dbId, tblId, name }),
+                links.Insert(1,new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetColumn), values: new { dbId, tblId, name }),
                    method == nameof(GetColumn) ? "self" : "column_get",
                    "GET"));
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateColumn), values: new { dbId, tblId }),
-                method == nameof(CreateColumn) ? "self" : "column_post",
-                "POST"));
             }
             return links;
         }

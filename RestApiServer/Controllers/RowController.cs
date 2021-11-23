@@ -133,18 +133,18 @@ namespace RestApiServer.Controllers
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetRows), values: new { dbId, tblId }),
                 method == nameof(GetRows) ? "self" : "rows_get",
                 "GET"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateRow), values: new { dbId, tblId }),
+                method == nameof(CreateRow) ? "self" : "row_post",
+                "POST"),
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteRow), values: new { dbId, tblId, num }),
                 method == nameof(DeleteRow) ? "self" : "row_delete",
                 "DELETE")
             };
             if (method != nameof(DeleteRow))
             {
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetRow), values: new { dbId, tblId, num }),
+                links.Insert(1, new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetRow), values: new { dbId, tblId, num }),
                    method == nameof(GetRow) ? "self" : "row_get",
                    "GET"));
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateRow), values: new { dbId, tblId }),
-                method == nameof(CreateRow) ? "self" : "row_post",
-                "POST"));
             }
             return links;
         }

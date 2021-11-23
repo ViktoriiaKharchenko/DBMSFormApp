@@ -57,17 +57,23 @@ namespace RestApiServer.Controllers
         [HttpPost]
         public JsonResult CreateDatabase([FromBody] Database db)
         {
+            Database database;
             try
             {
+                foreach(var tbl in db.Tables)
+                {
+                    tbl.Database = db.Name;
+                }
                 context_.AddDatabase(db);
-                db.Links = CreateDatabaseLinks(nameof(CreateDatabase), db.Id);
+                database = context_.GetDatabase(db.Name);
+                database.Links = CreateDatabaseLinks(nameof(CreateDatabase), database.Id);
             }
             catch (Exception e)
             {
                 return new JsonResult(BadRequest(e.Message));
             }
 
-            return new JsonResult(db);
+            return new JsonResult(database);
         }
         /// <summary>
         /// Delete database
@@ -84,25 +90,25 @@ namespace RestApiServer.Controllers
             return new JsonResult(links);
         }
 
-        private List<Link> CreateDatabaseLinks(string method, int dbId)
+        private List<Link> CreateDatabaseLinks(string method, int id)
         {
             var links = new List<Link>
             {
                 new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetDatabases)),
                 method == nameof(GetDatabases) ? "self" : "databases_get",
                 "GET"),
-                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteDatabase), values: new { dbId}),
-                method == nameof(DeleteDatabase) ? "self" : "column_delete",
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateDatabase)),
+                method == nameof(CreateDatabase) ? "self" : "database_post",
+                "POST"),
+                new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(DeleteDatabase), values: new { id}),
+                method == nameof(DeleteDatabase) ? "self" : "database_delete",
                 "DELETE")
             };
             if (method != nameof(DeleteDatabase))
             {
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetDatabase), values: new { dbId}),
-                   method == nameof(GetDatabase) ? "self" : "column_get",
+                links.Insert(1, new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(GetDatabase), values: new { id }),
+                   method == nameof(GetDatabase) ? "self" : "database_get",
                    "GET"));
-                links.Add(new Link(linkGenerator_.GetUriByAction(HttpContext, nameof(CreateDatabase)),
-                method == nameof(CreateDatabase) ? "self" : "column_post",
-                "POST"));
             }
             return links;
         }
